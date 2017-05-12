@@ -1,0 +1,39 @@
+i) name:
+	crystal ho
+	Muhammad Hazir othman
+
+ii) description:
+	the purpose of this file is to read the input in a muilti-process way. This program uses pipe and fork to achieve the muilti-process goal.
+
+iii) difficulties:
+	first, there was a segmentation fault, then it was just because the program free() too many unnaccecary variables.
+	second, the output file shows only the first word of each beginning offset(the starting point for each process to read the file), then it turned out to be because the pipe only send the ptr of one word back to the parent when it was supposed to be the whole list.
+	third, after making the pipe send back an array of ptr, the program stucked into an infinite loop and display nothing
+
+iV) library used:
+  #include<stdio.h>
+  #include<string.h>
+  #include<ctype.h>
+  #include<stdbool.h>
+  #include<stdlib.h>
+  #include<time.h>
+  #include<sys/types.h>
+  #include<unistd.h>
+	
+v) design choices:
+  fseek over lseek: prevent the warning
+  fscanf: is able to skip other stuff and scan a word at a time
+
+vi) performance measurement results:
+	
+	input1.txt:
+		wordc: Timer: 0.001240
+		wordc-mp:     0.003422   //slower 
+	input2.txt:
+		wordc: Timer: 0.045866
+		wordc-mp:
+	input3.txt:
+		wordc: Timer: 0.200912
+		wordc-mp:
+
+it is difficult to measure the timlapse of the wordc-mp file because sometimes it works, sometimes it doesn't (without changing any code).

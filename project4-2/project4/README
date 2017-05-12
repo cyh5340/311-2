@@ -1,0 +1,32 @@
+== Team members ==
+Crystal Ho
+== Sources consulted ==
+ask classmates about which tools to use or what function is useful for solving specific problems.
+
+== Problem facing ==
+i) stuck at tests but passed as individually up to #17. was later informed "file descriptor left open" should be solve.
+
+ii) went to the TA, he said my struct args is weirred, it's inside mr yet one of the argument in args points to mr. Fixed it, then stucked at #6 (seg fault) 
+
+ii) a classmate outside professor's office show me how to use gdb instead of valgrind. He helped me fixed args. Now it's not in mr anymore. 
+
+iii) then, stuck at 12, asked other classmates about how to solve address problem since the tests are passed when alone. 
+	(solving for file descriptor left open)
+     added the function setsockopt to solve it, but still couldn't fix it.
+	went on completing the consume and reduce function instead, end up stucking at #7
+
+iii) then, went into infinite loop in #6, gdb said it's about thread_join. After 12 hours, finally realized it's stuck somewhere in reduce/consume. commented out all locks since I don't see any point of keeping them (they're in different client anyway) move to #11.
+
+iV) between #11 and other problem, too frustrate to fix whatever was wrong, so just pulled out code from P3 and modified it. suddenly, it's at #12
+	however, now args a is inside mr again. Realized I stored it there so a->i will also be stored inside mr.
+
+v) still didn't fix the "file descroptor left open" problem. added close() for all sockets if any fail. less file left open
+
+vi)end up storing the file descroptor outside the threads then closing them in finish
+
+vii) realize the loop for closing thread if fail should be j=0;j<=i;j++ instead of j=0;j<i;j++
+
+iiX) stuck at #17 forever, nothing seems wrong with consume, but gdb/ valgrind said so.
+
+iX) read the project description carefully again, realize it should return 0 if fail for consume. So I fixed it.
+	after doing so, it suddenly pass all tests.

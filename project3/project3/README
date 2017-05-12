@@ -1,0 +1,38 @@
++---------------+
+| Group Members |
++---------------+
+Ashley Advena
+Crystal Ho
+
++------------------------+
+| Performance Evaluation |
++------------------------+
+We have not yet been able to complete the performance evaluation.
+
++-------------------+
+| Sources Consulted |
++-------------------+
+Textbook
+Lecture notes for CMPSC 311 & CMPSC 473
+Project specifications
+
+i) description:
+	the purpose of this file is to implement a simplified system framework in order to do the word count through different threads. unlicke the pipe, the threads are more commonly used in real life.
+
+iii) difficulties:
+	first, there was a segmentation fault, it was still unclear why it occured during calling for the map and reduce function, but after modifying the structure into seperating the threads (map and reduce was stored in the same array due to start and create won't be call more than once), it started to work.
+	second, memory leak causing seg fault the the free, so I moved the structure arg into mr and make it an array in order to free it altogether.
+	third, the finish does not work correctly. Unclear why it occured, but after listing everything, its done.
+	last tests modified: 30, check if the file works.
+
+iV) library used:
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include "mapreduce.h"

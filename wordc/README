@@ -1,0 +1,56 @@
+(  i-a) C Files
+	main.c
+		This file contains the control of the program inplimented in three phases:
+			Phase 1) Reading each word from file and adding it to the linked list
+			Phase 2) Printing the contents of the linked list into a file
+			Phase 3) Calculating the total execution time and printing that into a file
+	file.c
+		This file contins the routine to read a word from file.
+		
+		char* input(FILE*)
+			input:	A file with read permission
+			output:	One word (anything seperated by white space) or NULL if EOF is reached
+			
+		Procedure:
+			The implimentation loops through the file one character at a time and adds the approperiate characters to a char array. Before the main loop, a small loop ensures the first character is either a letter, a number, or EOF. From there the main loop begins. 
+			In the main (do .. while) loop a check to ensure EOF and white space (separation of words) is not reached. From there, all letters were cast to lowercase and and added to a char array and all numbers were added directly to the array. There is a counter for the number of characters (iterations of the loop) to ensure overflow does not occur. If overflow were to occur before whitespace is met, a new array doulbe the size would be created and the loop would continue. 
+			Before returing the word, if there word was of length zero (when EOF was reached) the array would point to NULL, otherwise the null character ('\0) is placed at the end of the array.
+	iterator.c
+		This file contins the linked list and methods related to it
+		
+		Iterator.h has contains the declaration for the struct LinkedList (as well as a typedef that redefines this as just List) and struct node (as well as a typedef that redefines struct node* as just Node). It also contains the function declarations for make_node() and make_list() which essentially serves as a constructor for the Node and List* types, allocating memory for a new Node and a new List* and setting all values to a default value, which is defined within the iterator.c file.
+		
+		The List object contains function pointers to the methods search, add, sort, and print, which handle printing, addition of a new node to the list, searching for a certain value in the list, and sorting the list. These function pointers are initialized to their corresponding methods when the new_list() method is called. This allowed for a quicker change to the default behavior of the List object as the implementation of code evolved over time.
+		
+		Initially, we had written the linked list to stay sorted at all times, with a call to search included in the add function. The problem with this implementation is that searching for a sorted linked list still takes O(n) time, meaning that the entire wordc application, runs on the order of O(n^2) time. By writing rewriting add as a function that just adds the new node to the head of the list in O(1) time and then writing an O(n*log(n)) mergesort function, we are able to reduce the runtime of wordc to O(n) + O(nlogn), which is still O(n*log(n)) time. This change of implementation caused the wordc times for large files such as Arabian nights to drop from roughly 23 seconds to about 0.15, which is the runtime reported in the analysis below and included in detail in the stats.xls file in this tarball.
+		
+		Because of the way that make_list and function pointers are implemented, it was possible to implement these changes to the list object without any change to main(). It would also be possibe for another programmer who is looking to create a similar list to build off of this code and then modifying the function pointers to create their own list behavior.
+		
+		The linked list code implements a "Dummy head" implementation of the Linked List, meaning that the Node that to which the head pointer is pointing is not actually a part of the list, but is more of a placeholder for the rest of the list. This implementation was chosen because it avoids a number of difficult edge cases with regards to searching and adding to a linked list. We had also initially discussed making dummy head the "next" pointer for the last element of the list, as this would eliminate chances of the program accessing null memory, but later decided against this, as it would be more difficult for us to locate logical errors on a circular list.
+	all *.h files
+		declare the functions and structs necessary for the corresponding *.c files
+	
+(  i-b) BASH Files
+	word.sh
+		First, we make sure we are overwriting the file that we are writing to by deleting the origional file. Next, we convert all uppercase letters to lowercase. After that, we filter out all not-letters, non-digits, non-whitespace, and all brackets. Once that is done, we replace the whitespace into linebreaks and sort the output followed by uniq -c to count unique words. Lastly, we reformatted uniq's output to match the asked output using gawk.
+( ii)
+Barczynski, John
+	The existance of the segmentation fault was a very difficult and interesting challenge, as it seems to have taken the place of most of the descriptive error method with which I have become familiar in Java. Additionally, learning to build and debug on the command line was a very different experience than that of my usual tools of Visual Studio and Eclipse.
+	Because of the time necessary to ensure that the code was running without getting segmentation faults and the time spent tuning the Linked List functions (see description of the changes to Linked List), it took a much greater amount of time to write the C version of the wordcount operation than the shell version.
+	Shell scripting was a new experience for me, as I had not spent nearly as much time in the linux command line as I have spent writing C-like code from C++ and Java. That being said, writing a relatively speedy and bug-free implementation of the wordcount operation was a much faster and easier process. I get the sense, however, that writing C code gives the user a much finer control over exactly how their programs work, whereas using shell scripts allows a programmer to leverage already fairly well-tuned libraries of working code in order to accomplish their required tasks more quickly and easily. We were, however, able to make the C code faster than the shell by a pretty large amount through diligent implementation. Additionally, I suspect that one could further speed up the implementation of the C code through multithreading, as watching a system process monitor during the running of the C code showed that the process was using 100% of one of the four cores on my laptop, whereas running mergesort() on four separate threads on 1/4 of the list and then merging the lists together after the fact, although that would take even more time to implement.
+	
+Heilman, Matthew
+	Writing the C program was not too bad due to the similarities between C and C++ and the use of on-line references for new functions although debugging was more challenging due to using unfamiliar command line tools (gdb) and there being more places for bugs to be. Since I have prior knowledge in C++ and Java, the C language is similar enough, many practices and functionalities are tranferable thus making programmin in C easier. The script coding, on the other hand, was more challenging as I had never done any script programming before. The implementation of the script was smaller and easier to determine where bugs were. In general, C programming gives the programmer more control whereas shell scripting is combining many optimized method to get the same result.
+
+(iii)
+	Hardships
+		- Memory managment e.g. segmentation faults (c)
+		- Decimal representation (script)
+		
+( iv)
+	Results from running Arabian nights 100 
+		 ----------------------------------------------
+		|File   |  MEAN (s)  | Standard Deviation (ms) |
+		|C File	| 0.15226344 |  3.3402066              |
+		|Shell	| 0.50729037 | 10.7959376              |
+		 ----------------------------------------------
